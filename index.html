@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Day Just For You</title>
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load JS Confetti Library for celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+    
+    <style>
+        /* Custom font import and configuration */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+        
+        :root {
+            --primary-color: #fce4ec; /* Very light pink, almost white */
+            --secondary-color: #ffcdd2; /* Light pink */
+            --text-color: #4a4a4a; /* Darker gray for readability on light background */
+            --bg-color: #fffafa; /* Snow white */
+            --card-bg-color: rgba(255, 255, 255, 0.85); /* Slightly transparent white for cards to see background image */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            /* Added background properties for future image */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; 
+            transition: background-image 0.8s ease-in-out, background-color 0.5s;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fancy-font {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        .glow {
+            /* Adjusted glow for light background - used in the Welcome screen */
+            text-shadow: 0 0 8px rgba(255, 105, 180, 0.4), 0 0 15px rgba(255, 105, 180, 0.2); 
+        }
+        
+        /* New CSS for Continuous Heart Background Animation on Welcome Screen */
+        @keyframes heartPulse {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #welcomeSection {
+            /* Subtle pink gradient pulse */
+            background: linear-gradient(-45deg, var(--card-bg-color), rgba(255, 255, 255, 0.95), var(--secondary-color), var(--card-bg-color));
+            background-size: 400% 400%;
+            animation: heartPulse 15s ease infinite;
+        }
+        
+        /* Removed #acceptedSection.final-pink-bg style block */
+
+        /* Specific styles for the text within the final section */
+        #acceptedSection .large-text {
+             font-size: 3rem; /* 48px */
+             line-height: 1.1;
+             color: #ff69b4; /* Re-applied pink color for the main title */
+        }
+        @media (min-width: 640px) {
+            #acceptedSection .large-text {
+                font-size: 5rem; /* 80px */
+            }
+        }
+    </style>
+    <script>
+        // Global variable for confetti - initialized on window load
+        let jsConfetti = null; 
+        
+        // --- Customization Variables (EDIT THESE) ---
+        // I've updated this based on the name in your image!
+        const HER_NAME = "Anuhithaa"; 
+        const BIRTHDAY_DATE = "October 29"; // Change this!
+        // VITAL: REPLACE THIS PLACEHOLDER URL WITH HER ACTUAL PHOTO URL
+        const HER_PHOTO_URL = 'cropped-WhatsApp Image 2025-10-11 at 15.27.34_49b68a70.jpg'; 
+        // ---------------------------------------------
+
+        /**
+         * Smoothly shows a new section and hides the current one.
+         */
+        function showSection(currentId, nextId, callback = null) {
+            const current = document.getElementById(currentId);
+            const next = document.getElementById(nextId);
+
+            current.classList.add('opacity-0');
+            setTimeout(() => {
+                current.classList.add('hidden');
+                next.classList.remove('hidden');
+                setTimeout(() => {
+                    next.classList.remove('opacity-0');
+                    if (callback) callback();
+                }, 50); // Small delay for rendering
+            }, 500); // Wait for fade-out
+        }
+
+        /**
+         * Applies the background image and transitions to the Birthday Section (Section 2).
+         */
+        function startBirthdaySection() {
+            // Apply background image and a slight white overlay for contrast
+            document.body.style.backgroundImage = `linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('${HER_PHOTO_URL}')`;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundAttachment = 'fixed';
+
+            showSection('welcomeSection', 'birthdaySection');
+        }
+
+        /**
+         * Triggers the rose confetti and transitions directly to the final celebration.
+         */
+        function triggerCelebration() {
+            // 1. Show Rose Confetti for a warm, romantic surprise
+            jsConfetti.addConfetti({
+                emojis: ['🌹', '❤️', '🥳', '✨'],
+                confettiNumber: 150,
+            });
+
+            // 2. Transition directly to the final message section after a brief delay
+            setTimeout(() => {
+                showSection('birthdaySection', 'acceptedSection', () => { 
+                    // REMOVED: document.getElementById('acceptedSection').classList.add('final-pink-bg');
+                    
+                    // Play Final Confetti (hearts, champagne, etc.)
+                    jsConfetti.addConfetti({
+                        emojis: ['💖', '🥂', '🎂', '🎉', '✨'],
+                        confettiNumber: 250, // More confetti for bigger impact
+                        confettiRadius: 7,
+                    });
+                });
+            }, 1000); // 1000ms delay to enjoy roses before final transition
+        }
+        
+        /**
+         * Initialize customization content on load.
+         */
+        window.onload = function() {
+            // Initialize JSConfetti here to ensure the DOM (body) is loaded before the library runs its setup.
+            jsConfetti = new JSConfetti();
+            
+            // Set dynamic text content
+            document.getElementById('welcomeName').textContent = HER_NAME;
+            document.getElementById('birthdayName').textContent = HER_NAME;
+            document.getElementById('birthdayDate').textContent = BIRTHDAY_DATE;
+            document.getElementById('acceptedName').textContent = HER_NAME;
+            document.getElementById('finalCommitmentName').textContent = HER_NAME;
+        };
+
+    </script>
+</head>
+<body class="p-4 sm:p-8">
+
+    <!-- Section 1: Welcome Screen (Animated Background) -->
+    <div id="welcomeSection" class="text-center transition-opacity duration-500 max-w-2xl mx-auto p-8 md:p-12 backdrop-blur-sm rounded-3xl shadow-2xl">
+        <h1 class="text-4xl sm:text-6xl fancy-font glow mb-6" style="color: #d5006a;">Welcome</h1>
+        <p class="text-xl sm:text-3xl mb-8">This is for the person who means more to me than words could ever say</p>
+        <h2 id="welcomeName" class="text-5xl sm:text-7xl fancy-font mb-10 animate-pulse" style="color: #d5006a;">Anuhithaa</h2>
+        <button 
+            onclick="startBirthdaySection()"
+            class="px-8 py-3 text-lg font-bold rounded-full bg-secondary-color text-gray-800 shadow-lg hover:bg-primary-color transition transform hover:scale-105"
+        >
+            Birthday Surprise!
+        </button>
+    </div>
+
+    <!-- Section 2: Birthday Message (With Photo Background) -->
+    <div id="birthdaySection" class="hidden opacity-0 text-center transition-opacity duration-500 max-w-3xl mx-auto p-8 md:p-16 bg-card-bg-color backdrop-blur-sm rounded-3xl shadow-2xl">
+        <h2 class="text-5xl sm:text-4xl fancy-font mb-4" style="color: #d5006a;">The Day That’s All About You!</h2>
+        <p id="birthdayDate" class="text-xl sm:text-3xl mb-8">October 29</p>
+        
+        <div class="text-left text-lg space-y-4 mb-10">
+            <p>To my beautiful <span id="birthdayName" class="font-bold" style="color: #d5006a;">Anuhithaa</span>,</p>
+            <p>Another year, another incredible journey with you. You light up my life, you inspire me every day, and I'm so lucky to celebrate this special day with you. You deserve all the joy in the world.</p>
+            <p>I don’t need a reason to celebrate you, but your birthday gives me the best one to remind you how truly special you are to me.</p>
+            <p>I hope your day is filled with happiness, surprises, and the sweetest memories.</p>
+            <p>You’re the reason behind my smile, the one who makes everything feel right.
+I never want to see you sad I’ll always do everything I can to keep you happy.
+All I wish for is to spend more time with you, making every moment ours.</p>
+        </div>
+
+        <button 
+            onclick="triggerCelebration()"
+            class="px-10 py-4 text-xl font-extrabold rounded-full bg-secondary-color text-gray-800 shadow-xl hover:bg-primary-color transition transform hover:scale-105"
+        >
+            Ready for the Next Step?
+        </button>
+    </div>
+
+    <!-- Section 4: Final Commitment Message (Transparent Card) -->
+    <div id="acceptedSection" class="hidden opacity-0 text-center transition-opacity duration-1000 max-w-4xl mx-auto p-16 md:p-20 bg-card-bg-color backdrop-blur-sm rounded-3xl shadow-2xl transform scale-105">
+        
+        <p class="text-4xl fancy-font mb-4 text-left" style="color: var(--text-color);">
+           To my special one <span id="acceptedName" class="font-bold" style="color: #d5006a;">Anuhithaa</span>,
+        </p>
+
+
+        
+        <p class="text-xl sm:text-2xl mb-10 font-light text-center" style="color: var(--text-color);">
+            I’ve never been able to express my love for you till now,
+but the truth is I really, truly love you more than anything in this world.
+I don’t ever want to lose you for any reason.
+
+<p class="text-2xl fancy-font mb-10 font-light text-center" style="color: #4a4a4a;">i've never given you any fake promises,
+but today, I promise you  I’ll be with you in every situation, no matter what.</p>
+
+<p class="text-2xl fancy-font mb-10 font-light text-center" style="color: #4a4a4a;">Once again, I’m wishing you a very Happy Birthday, my love.
+I don’t know if this is small or big,
+but every word I’ve written here is straight from my heart
+        </p>
+
+        <hr class="border-t-2 border-gray-300 my-6">
+
+        <p class="text-lg sm:text-xl italic font-light text-center" style="color: var(--text-color);">
+           Wishing you the most beautiful day, my love. Every moment with you feels like a celebration of us. You mean everything to me. <span id="finalCommitmentName" class="font-bold" style="color: #d5006a;">Anuhithaa</span>.
+        </p>
+    </div>
+
+</body>
+</html>
